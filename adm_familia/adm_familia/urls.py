@@ -20,6 +20,6 @@ from MVT.views import mvtHome
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', mvtHome),
+    path("admin/", admin.site.urls),
+    path("", mvtHome),
 ]

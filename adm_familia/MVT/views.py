@@ -1,8 +1,16 @@
-from multiprocessing import context
-from django.http import HttpResponse
 from django.shortcuts import render
+
+from MVT.models import Persona
 
 
 def mvtHome(request):
-    context = { "query": request.GET }
-    return render(request, "./templates/home.html", context)
+    template = "home.html"
+    people = Persona.objects.all()
+
+    context = {
+        "getObject": request.GET,
+        "cantidad_personas": people.count(),
+        "personas": people,
+    }
+
+    return render(request, template, context)
