@@ -1,79 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{% extends 'base.html' %}
 
-    <style>
-      body {
-        font-family: "Roboto", sans-serif;
-        margin: 0;
-        padding: 0;
-      }
+{% block content %}
+<header>
+  <h1>Primer MVT</h1>
 
-      header {
-        border-bottom: 1px solid #ccc;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 0.5rem;
-      }
+  <nav>
+    <a href="{% url 'people' %}">Volver</a>
+  </nav>
+</header>
 
-      form {
-        display: flex;
-        flex-flow: column wrap;
-        justify-content: center;
-        align-items: center;
+<h3>Añadir nueva persona</h3>
 
-        margin: auto;
-        max-width: 550px;
-      }
+{% if message %}
+  <b>{{ message }}</b>
+{% endif %}
 
-      form input {
-        margin-bottom: 1rem;
-        width: 100%;
-      }
+<form method="POST">
+  {% csrf_token %}
+  <label for="name">Nombre</label>
+  <input type="text" name="name" placeholder="Juan Perez" required />
 
-    </style>
+  <label for="born">Nacimiento</label>
+  <input type="date" name="born" min="1000-01-01" required />
 
-    <title>MVT | Agregar nueva persona</title>
-  </head>
+  <label for="favourite_number">Numero favorito</label>
+  <input type="text" name="favourite_number" placeholder="42" required />
 
-  <body>
-    <header>
-      <h1>Primer MVT</h1>
+  <label for="relationship">Parentezco</label>
+  <input type="text" name="relationship" placeholder="Desconocido" />
 
-      <nav>
-        <a href="{% url 'people' %}">Volver</a>
-      </nav>
-    </header>
+  <input type="submit" value="Guardar" />
+</form>
 
-    <h3>Añadir nueva persona</h3>
-
-    {% if message %}
-      <b>{{ message }}</b>
-    {% endif %}
-
-    <form method="POST">
-      {% csrf_token %}
-      <label for="name">Nombre</label>
-      <input type="text" name="name" placeholder="Juan Perez" required />
-
-      <label for="born">Nacimiento</label>
-      <input type="date" name="born" min="1000-01-01" required />
-
-      <label for="favourite_number">Numero favorito</label>
-      <input type="text" name="favourite_number" placeholder="42" required />
-
-      <label for="relationship">Parentezco</label>
-      <input type="text" name="relationship" placeholder="Desconocido" />
-
-      <input type="submit" value="Guardar" />
-    </form>
-
-    <script>
-      console.log({ postObject: "{{postObject}}" });
-    </script>
-  </body>
-</html>
+<script>
+  console.log({ postObject: "{{postObject}}" });
+</script>
+{% endblock %}

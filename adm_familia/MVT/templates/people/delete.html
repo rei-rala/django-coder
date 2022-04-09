@@ -1,123 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+{% extends 'base.html' %}
 
-    <style>
-      body {
-        font-family: "Roboto", sans-serif;
-        margin: 0;
-        padding: 0;
-      }
+{% block content %}
+<header>
+  <h1>Primer MVT</h1>
 
-      header {
-        border-bottom: 1px solid #ccc;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 0.5rem;
-      }
+  <nav>
+    <a href="{% url 'people' %}">Volver</a>
+  </nav>
+</header>
 
-      form {
-        display: flex;
-        flex-flow: column wrap;
-        justify-content: center;
-        align-items: center;
+{% if person.id %}
+  <h3>Eliminando persona #{{person.id}}</h3>
+{% else %}
+  <h3>Eliminando persona</h3>
+{% endif %}
 
-        margin: auto;
-        max-width: 550px;
-      }
+{% if message %}
+  <b>{{ message }}</b>
+{% endif %}
 
-      form input {
-        margin-bottom: 1rem;
-        width: 100%;
-      }
-    </style>
+<form method="POST">
+  {% csrf_token %}
+  <label for="name">Nombre</label>
+  <input
+    disabled
+    type="text"
+    name="name"
+    placeholder="{{person.name}}"
+    value="{{person.name}}"
+  />
 
-    <title>
-      MVT |
-        {% if person.id %}
-          Eliminar #{{person.id}}
-        {% else %}
-          Entrada eliminada
-        {% endif %}
-    </title>
-  </head>
+  <label for="born">Nacimiento</label>
+  <input
+    disabled
+    type="date"
+    name="born"
+    placeholder="{{person.born}}"
+    value="{{person.born}}"
+  />
 
-  <body>
-    <header>
-      <h1>Primer MVT</h1>
+  <label for="favourite_number">Numero favorito</label>
+  <input
+    disabled
+    type="text"
+    name="favourite_number"
+    placeholder="{{person.favourite_number}}"
+    value="{{person.favourite_number}}"
+  />
 
-      <nav>
-        <a href="{% url 'people' %}">Volver</a>
-      </nav>
-    </header>
+  <label for="relationship">Parentezco</label>
+  <input
+    disabled
+    type="text"
+    name="relationship"
+    placeholder="{{person.relationship}}"
+    value="{{person.relationship}}"
+  />
 
-    {% if person.id %}
-      <h3>Eliminando persona #{{person.id}}</h3>
-    {% else %}
-      <h3>Eliminando persona</h3>
-    {% endif %}
-    
-    {% if message %}
-      <b>{{ message }}</b>
-    {% endif %}
+  {% if person.id %}
+    <input type="submit" value="Eliminar" />
+  {% else %}
+    <i>Entrada eliminada</i>
+    <a href="{% url 'people' %}">Volver a la lista</a>
+  {% endif %}
+</form>
 
-    <form method="POST">
-      {% csrf_token %}
-      <label for="name">Nombre</label>
-      <input
-        disabled
-        type="text"
-        name="name"
-        placeholder="{{person.name}}"
-        value="{{person.name}}"
-      />
-
-      <label for="born">Nacimiento</label>
-      <input
-        disabled
-        type="date"
-        name="born"
-        placeholder="{{person.born}}"
-        value="{{person.born}}"
-      />
-
-      <label for="favourite_number">Numero favorito</label>
-      <input
-        disabled
-        type="text"
-        name="favourite_number"
-        placeholder="{{person.favourite_number}}"
-        value="{{person.favourite_number}}"
-      />
-
-      <label for="relationship">Parentezco</label>
-      <input
-        disabled
-        type="text"
-        name="relationship"
-        placeholder="{{person.relationship}}"
-        value="{{person.relationship}}"
-      />
-
-      {% if person.id %}
-        <input type="submit" value="Eliminar" />
-      {% else %}
-        <i>Entrada eliminada</i>
-        <a href="{% url 'people' %}">Volver a la lista</a>
-      {% endif %}
-    </form>
-
-    <script>
-      document.querySelector("form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        confirm(
-          "¿Estás seguro de que quieres eliminar la entrada #{{person.id}}?"
-        ) && e.target.submit();
-      });
-    </script>
-  </body>
-</html>
+<script>
+  document.querySelector("form").addEventListener("submit", (e) => {
+    e.preventDefault();
+    confirm(
+      "¿Estás seguro de que quieres eliminar la entrada #{{person.id}}?"
+    ) && e.target.submit();
+  });
+</script>
+{% endblock %}
