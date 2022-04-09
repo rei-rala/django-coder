@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block title %}
+  | Mostrando #{{ person.id }}: {{person.name}}
+{% endblock %}
+
+
 {% block content %}
 <header>
   <h1>Primer MVT</h1>

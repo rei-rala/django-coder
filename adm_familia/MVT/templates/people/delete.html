@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 
+{% block title %}
+  |
+    {% if person.id %}
+      Eliminar #{{person.id}}
+    {% else %}
+      Entrada eliminada
+    {% endif %}
+{% endblock %}
+
 {% block content %}
 <header>
   <h1>Primer MVT</h1>
