@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0.5rem;
+      }
+
+      form {
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
+        align-items: center;
+
+        margin: auto;
+        max-width: 550px;
+      }
+
+      form input {
+        margin-bottom: 1rem;
+        width: 100%;
+      }
+    </style>
+
+    <title>MVT | Mostrando #{{ person.id }}: {{person.name}}</title>
+  </head>
+
+  <body>
+    <header>
+      <h1>Primer MVT</h1>
+
+      <nav>
+        <a href="{% url 'people' %}">Volver</a>
+      </nav>
+    </header>
+
+    <h3>Persona #{{person.id}}</h3>
+    {% if message %}
+    <b>{{ message }}</b>
+    {% endif %}
+
+    <form method="POST" action="">
+      {% csrf_token %}
+      <label for="name">Nombre</label>
+      <input
+        type="text"
+        name="name"
+        placeholder="{{person.name}}"
+        value="{{person.name}}"
+      />
+
+      <label for="born">Nacimiento</label>
+      <input
+        type="date"
+        name="born"
+        placeholder="{{person.born}}"
+        value="{{person.born}}"
+      />
+
+      <label for="favourite_number">Numero favorito</label>
+      <input
+        type="text"
+        name="favourite_number"
+        placeholder="{{person.favourite_number}}"
+        value="{{person.favourite_number}}"
+      />
+
+      <label for="relationship">Parentezco</label>
+      <input
+        type="text"
+        name="relationship"
+        placeholder="{{person.relationship}}"
+        value="{{person.relationship}}"
+      />
+
+      <input type="submit" value="Guardar" />
+    </form>
+  </body>
+</html>

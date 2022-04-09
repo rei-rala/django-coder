@@ -1,4 +1,4 @@
 from django.contrib import admin
-from MVT.models import Persona
+from MVT.models import Person
 
-admin.site.register(Persona)
+admin.site.register(Person)

@@ -16,10 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from MVT.views import mvtHome
+from MVT.views import deletePerson, toPeople, people, addPerson, editPerson, deletePerson
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", mvtHome),
+    path("", toPeople, name='root'),
+    path("people/", people, name='people'),
+    path('people/person/add/', addPerson, name='addPerson'),
+    path('people/person/edit/<int:id>', editPerson, name='editPerson'),
+    path('people/person/delete/<int:id>', deletePerson, name='deletePerson'),
 ]

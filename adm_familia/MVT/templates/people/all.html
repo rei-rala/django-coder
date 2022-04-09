@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        border-bottom: 1px solid #ccc;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 0.5rem;
+      }
+
+      ul {
+        display: flex;
+        flex-flow: row wrap;
+        gap: 0.5rem;
+        padding: none;
+      }
+
+      li {
+        list-style: none;
+      }
+
+      fieldset {
+        text-align: center;
+        border-radius: 5px;
+      }
+
+      fieldset legend {
+        margin: auto;
+      }
+
+      fieldset p {
+        display: flex;
+        gap: 0.5rem;
+        justify-content: space-between;
+      }
+    </style>
+
+    <title>MVT | Mostrando {{ q_people }} personas</title>
+  </head>
+
+  <body>
+    <header>
+      <h1>Primer MVT</h1>
+
+      <nav>
+        <a href="#">Home</a>
+      </nav>
+    </header>
+    <h3>Personas</h3>
+
+    <a href="{% url 'addPerson' %}">Agregar nueva persona</a>
+
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+
+    <ul>
+      {% for person in people %}
+      <li>
+        <fieldset>
+          <legend>{{ person.name }}</legend>
+          <p>Nacimiento <b>{{ person.born }}</b></p>
+          <p>Numero Favorito: <b>{{ person.favourite_number }}</b></p>
+          <p>Parentezco: <b>{{ person.relationship }}</b></p>
+          <a href="{% url 'editPerson' id=person.id %}">Editar</a>
+          <a href="{% url 'deletePerson' id=person.id %}">Eliminar</a>
+        </fieldset>
+      </li>
+      {% endfor %}
+    </ul>
+  </body>
+</html>
