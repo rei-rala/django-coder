@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import TemplateView
 
 from MVT.models import Person
 from MVT.formsModel import PersonForm
@@ -8,26 +9,30 @@ def toPeople(request):
     return redirect("/people")
 
 
-def people(request):
-    template = "people/all.html"
-    people = Person.objects.all()
+class PersonListView(TemplateView):
+    def get(self, request):
+        template_name = "people/all.html"
+        people = Person.objects.all()
+        context = {
+            "getObject": request.GET,
+            "q_people": people.count(),
+            "people": people,
+        }
+        return render(request, template_name, context)
 
-    context = {
-        "getObject": request.GET,
-        "q_people": people.count(),
-        "people": people,
-    }
 
-    return render(request, template, context)
-
-
-def addPerson(request):
+class PersonFormAdd(TemplateView):
     template = "people/add.html"
-    context = {}
 
-    if request.method == "POST":
+    def get(self, request):
+        return render(request, self.template, {})
+
+    def post(self, request):
+        context = {}
+
         postDictionary = request.POST.dict()
-        postDictionary["relationship"] = 'Desconocido' if postDictionary["relationship"].replace(' ', '') == '' else postDictionary["relationship"]
+        postDictionary["relationship"] = 'Desconocido' if postDictionary["relationship"].replace(
+            ' ', '') == '' else postDictionary["relationship"]
 
         person = PersonForm(postDictionary)
 
@@ -37,41 +42,59 @@ def addPerson(request):
         else:
             context["message"] = "Error al agregar persona"
 
-    return render(request, template, context)
+        return render(request, self.template, context)
 
 
-def editPerson(request, id):
+class PersonEdit(TemplateView):
+    context = {}
     template = "people/edit.html"
-    person = get_object_or_404(Person, pk=id)
 
-    context = {"person": person, }
+    def get(self, request, id):
+        person = get_object_or_404(Person, pk=id)
+        self.context = {"person": person, }
+        return render(request, self.template, self.context)
 
-    if request.method == "POST":
+    def post(self, request, id):
+        person = get_object_or_404(Person, pk=id)
         person = PersonForm(request.POST, instance=person)
+
         if person.is_valid():
             person.save()
-            context["message"] = "Persona editada correctamente"
+            self.context["message"] = "Persona editada correctamente"
         else:
-            context["message"] = "Error al editar persona"
+            self.context["message"] = "Error al editar persona"
 
-    year, month, date = person.born.strftime("%Y-%m-%d").split('-')
-    person.born = f'{str(year).ljust(4, "0")}-{month}-{date}'
+        year, month, date = person.born.strftime("%Y-%m-%d").split('-')
+        person.born = f'{str(year).ljust(4, "0")}-{month}-{date}'
 
-    return render(request, template, context)
+        return render(request, self.template, self.context)
 
 
-def deletePerson(request, id):
+class PersonDelete(TemplateView):
     template = "people/delete.html"
     context = {}
 
-    person = get_object_or_404(Person, pk=id)
-    context['person'] = person
+    def get(self, request, id):
+        person = get_object_or_404(Person, pk=id)
+        self.context = {"person": person, }
+        return render(request, self.template, self.context)
 
-    if request.method in ["POST", "DELETE"]:
+    def post(self, request, id):
+        person = get_object_or_404(Person, pk=id)
         try:
             person.delete()
-            context["message"] = "Persona eliminada correctamente"
+            self.context["message"] = "Persona eliminada correctamente"
         except Exception as e:
-            context["message"] = f"Error al eliminar persona {e}"
+            self.context["message"] = f"Error al eliminar persona, {e}"
 
-    return render(request, template, context)
+        return render(request, self.template, self.context)
+
+    def delete(self, request, id):
+        person = get_object_or_404(Person, pk=id)
+        try:
+            person.delete()
+            self.context["message"] = "Persona eliminada correctamente"
+        except Exception as e:
+            self.context["message"] = f"Error al eliminar persona, {e}"
+
+        return render(request, self.template, self.context)
