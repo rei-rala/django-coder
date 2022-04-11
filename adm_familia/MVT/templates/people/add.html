@@ -1,42 +1,41 @@
 {% extends 'base.html' %}
 
 {% block title %}
-  | Agregar nueva persona
+| Agregar nueva persona
+{% endblock %}
+
+{% block header_title %}
+<h3>Añadir nueva persona</h3>
+{% endblock %}
+
+{% block go_back %}
+<a href="javascript:history.go(-1)">Volver</a>
 {% endblock %}
 
 {% block content %}
-<header>
-  <h1>Primer MVT</h1>
-
-  <nav>
-    <a href="{% url 'people' %}">Volver</a>
-  </nav>
-</header>
-
-<h3>Añadir nueva persona</h3>
-
-{% if message %}
-  <b>{{ message }}</b>
-{% endif %}
-
 <form method="POST">
-  {% csrf_token %}
-  <label for="name">Nombre</label>
-  <input type="text" name="name" placeholder="Juan Perez" required />
+    {% csrf_token %}
+    <label for="name">Nombre</label>
+    <input type="text" id="name" name="name" placeholder="Juan Perez" required />
 
-  <label for="born">Nacimiento</label>
-  <input type="date" name="born" min="1000-01-01" required />
+    <label for="born">Nacimiento</label>
+    <input type="date" id="born" name="born" min="1000-01-01" max="{{default_born_date}}" value="{{default_born_date}}"
+        required />
 
-  <label for="favourite_number">Numero favorito</label>
-  <input type="text" name="favourite_number" placeholder="42" required />
+    <label for="favourite_number">Numero favorito</label>
+    <input type="number" id="favourite_number" name="favourite_number" placeholder="42" required />
 
-  <label for="relationship">Parentezco</label>
-  <input type="text" name="relationship" placeholder="Desconocido" />
+    <label for="relationship">Parentezco</label>
+    <input type="text" id="relationship" name="relationship" placeholder="Desconocido" />
 
-  <input type="submit" value="Guardar" />
+    <input type="submit" value="Guardar" />
 </form>
 
+<div class="section--back">
+    <a  href="{% url 'people' %}">Volver a la lista</a>
+</div>
+
 <script>
-  console.log({ postObject: "{{postObject}}" });
+    console.log({ postObject: "{{postObject}}" });
 </script>
 {% endblock %}

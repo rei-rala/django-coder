@@ -1,58 +1,45 @@
 {% extends 'base.html' %}
 
 {% block title %}
-  | Mostrando #{{ person.id }}: {{person.name}}
+| Mostrando #{{ person.id }}: {{person.name}}
+{% endblock %}
+
+{% block header_title %}
+<h3>Editar: Persona #{{person.id}}</h3>
+{% endblock %}
+
+
+{% block go_back %}
+<a href="javascript:history.go(-1)">Volver</a>
 {% endblock %}
 
 
 {% block content %}
-<header>
-  <h1>Primer MVT</h1>
-
-  <nav>
-    <a href="{% url 'people' %}">Volver</a>
-  </nav>
-</header>
-
-<h3>Persona #{{person.id}}</h3>
-{% if message %}
-<b>{{ message }}</b>
-{% endif %}
-
 <form method="POST" action="">
-  {% csrf_token %}
-  <label for="name">Nombre</label>
-  <input
-    type="text"
-    name="name"
-    placeholder="{{person.name}}"
-    value="{{person.name}}"
-  />
+    {% csrf_token %}
+    <label for="name">Nombre</label>
+    <input required type="text" id="name" name="name" placeholder="{{person.name}}" value="{{person.name}}" />
 
-  <label for="born">Nacimiento</label>
-  <input
-    type="date"
-    name="born"
-    placeholder="{{person.born}}"
-    value="{{person.born}}"
-  />
+    <label for="born">Nacimiento</label>
+    <input required type="date" id="born" name="born"
+        placeholder="{% if person.born %}Fecha anterior: {{person.born}} {% else %}2000-01-01{% endif %}"
+        value="{{person.born}}" />
 
-  <label for="favourite_number">Numero favorito</label>
-  <input
-    type="text"
-    name="favourite_number"
-    placeholder="{{person.favourite_number}}"
-    value="{{person.favourite_number}}"
-  />
+    <label for="favourite_number">Numero favorito</label>
+    <input required type="number" id="favourite_number" name="favourite_number"
+        placeholder="{% if favourite_number %}Numero anterior: {{favourite_number}} {% else %} 42{% endif %}"
+        value="{{person.favourite_number}}" />
 
-  <label for="relationship">Parentezco</label>
-  <input
-    type="text"
-    name="relationship"
-    placeholder="{{person.relationship}}"
-    value="{{person.relationship}}"
-  />
+    <label for="relationship">Parentezco</label>
+    <input required type="text" id="relationship" name="relationship"
+        placeholder="{% if person.relationship %}Relacion anterior: {{person.relationship}} {% else %} Desconocido{% endif %}"
+        value="{{person.relationship}}" />
 
-  <input type="submit" value="Guardar" />
+    <input type="submit" value="Guardar" />
 </form>
+
+<div class="section--back">
+    <a href="{% url 'people' %}">Volver a la lista</a>
+</div>
+
 {% endblock %}

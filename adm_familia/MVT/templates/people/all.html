@@ -1,37 +1,34 @@
 {% extends 'base.html' %}
 
 {% block title %}
-   | Mostrando {{ q_people }} personas
+    | Personas
+{% endblock %}
+
+{% block header_title %}
+ <h3> 
+     {% if q_people > 0 %}
+         Mostrando {{q_people}} persona{% if q_people > 1 %}s{% endif %}
+     {% else %}
+         No se encontraron personas (<a href="{% url 'addPerson' %}">Agregar?</a>)
+     {% endif %}
+{% endblock %}
+
+{% block go_back %}
 {% endblock %}
 
 {% block content %}
-<header>
-  <h1>Primer MVT</h1>
-
-  <nav>
-    <a href="#">Home</a>
-  </nav>
-</header>
-<h3>Personas</h3>
-
-<a href="{% url 'addPerson' %}">Agregar nueva persona</a>
-
-{% if message %}
-<p>{{ message }}</p>
-{% endif %}
-
 <ul>
-  {% for person in people %}
-  <li>
-    <fieldset>
-      <legend>{{ person.name }}</legend>
-      <p>Nacimiento <b>{{ person.born }}</b></p>
-      <p>Numero Favorito: <b>{{ person.favourite_number }}</b></p>
-      <p>Parentezco: <b>{{ person.relationship }}</b></p>
-      <a href="{% url 'editPerson' id=person.id %}">Editar</a>
-      <a href="{% url 'deletePerson' id=person.id %}">Eliminar</a>
-    </fieldset>
-  </li>
-  {% endfor %}
+    {% for person in people %}
+    <li>
+        <fieldset>
+            <legend>{{ person.name }}</legend>
+            <p>Nacimiento <b>{{ person.born }}</b></p>
+            <p>Numero Favorito: <b>{{ person.favourite_number }}</b></p>
+            <p>Parentezco: <b>{{ person.relationship }}</b></p>
+            <a href="{% url 'editPerson' id=person.id %}">Editar</a>
+            <a href="{% url 'deletePerson' id=person.id %}">Eliminar</a>
+        </fieldset>
+    </li>
+    {% endfor %}
 </ul>
 {% endblock %}

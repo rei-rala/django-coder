@@ -1,85 +1,58 @@
 {% extends 'base.html' %}
 
 {% block title %}
-  |
+    |
     {% if person.id %}
-      Eliminar #{{person.id}}
+        Eliminar Persona #{{person.id}}
     {% else %}
-      Entrada eliminada
+        Entrada eliminada
     {% endif %}
 {% endblock %}
 
+{% block header_title %}
+    {% if person.id %}
+        Eliminar #{{person.id}}
+    {% else %}
+        Entrada eliminada
+    {% endif %}
+{% endblock %}
+
+{% block go_back %}
+<a href="javascript:history.go(-1)">Volver</a>
+{% endblock %}
+
 {% block content %}
-<header>
-  <h1>Primer MVT</h1>
-
-  <nav>
-    <a href="{% url 'people' %}">Volver</a>
-  </nav>
-</header>
-
-{% if person.id %}
-  <h3>Eliminando persona #{{person.id}}</h3>
-{% else %}
-  <h3>Eliminando persona</h3>
-{% endif %}
-
-{% if message %}
-  <b>{{ message }}</b>
-{% endif %}
-
 <form method="POST">
-  {% csrf_token %}
-  <label for="name">Nombre</label>
-  <input
-    disabled
-    type="text"
-    name="name"
-    placeholder="{{person.name}}"
-    value="{{person.name}}"
-  />
+    {% csrf_token %}
+    <label for="name">Nombre</label>
+    <input disabled id="name" type="text" name="name" placeholder="{{person.name}}" value="{{person.name}}" />
 
-  <label for="born">Nacimiento</label>
-  <input
-    disabled
-    type="date"
-    name="born"
-    placeholder="{{person.born}}"
-    value="{{person.born}}"
-  />
+    <label for="born">Nacimiento</label>
+    <input disabled id="born" type="date" name="born" placeholder="{{person.born}}" value="{{person.born}}" />
 
-  <label for="favourite_number">Numero favorito</label>
-  <input
-    disabled
-    type="text"
-    name="favourite_number"
-    placeholder="{{person.favourite_number}}"
-    value="{{person.favourite_number}}"
-  />
+    <label for="favourite_number">Numero favorito</label>
+    <input disabled id="favourite_number" type="text" name="favourite_number" placeholder="{{person.favourite_number}}"
+        value="{{person.favourite_number}}" />
 
-  <label for="relationship">Parentezco</label>
-  <input
-    disabled
-    type="text"
-    name="relationship"
-    placeholder="{{person.relationship}}"
-    value="{{person.relationship}}"
-  />
+    <label for="relationship">Parentezco</label>
+    <input disabled id="relationship" type="text" name="relationship" placeholder="{{person.relationship}}"
+        value="{{person.relationship}}" />
 
-  {% if person.id %}
-    <input type="submit" value="Eliminar" />
-  {% else %}
-    <i>Entrada eliminada</i>
-    <a href="{% url 'people' %}">Volver a la lista</a>
-  {% endif %}
+    {% if person.id %}
+        <input type="submit" value="Eliminar" />
+    {% endif %}
 </form>
 
+<div class="section--back">
+    <a  href="{% url 'people' %}">Volver a la lista</a>
+</div>
+
 <script>
-  document.querySelector("form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    confirm(
-      "¿Estás seguro de que quieres eliminar la entrada #{{person.id}}?"
-    ) && e.target.submit();
-  });
+    document.querySelector("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        confirm(
+            "¿Estás seguro de que quieres eliminar la entrada #{{person.id}}?"
+        ) && e.target.submit();
+    });
 </script>
 {% endblock %}
