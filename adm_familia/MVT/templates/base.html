@@ -79,6 +79,7 @@
             place-items: center;
             height: 3rem;
             min-width: 5rem;
+            padding: 0 0.5rem;
         }
 
         header a {
@@ -133,13 +134,13 @@
                     {% block go_back %}{% endblock %}
                 </li>
                 <li>
-                    <a href="{% url 'people' %}">Listado</a>
+                    <a href="{% url 'new' %}">Nuevas Opciones</a>
                 </li>
                 <li>
-                    <a href="{% url 'addPerson' %}">Agregar</a>
+                    <a href="{% url 'people' %}">Listado personas</a>
                 </li>
                 <li>
-                    <a href="{% url 'searchPerson' %}">Buscar</a>
+                    <a href="{% url 'searchPerson' %}">Buscar personas</a>
                 </li>
             </ul>
         </nav>

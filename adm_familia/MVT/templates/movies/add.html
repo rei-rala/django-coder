@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+| Agregar nueva pelicula
+{% endblock %}
+
+{% block header_title %}
+<h3>Añadir nueva pelicula</h3>
+{% endblock %}
+
+{% block go_back %}
+<a href="javascript:history.go(-1)">ATRAS</a>
+{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="title">Titulo</label>
+    <input type="text" id="title" name="title" placeholder="La naranja mecanica" required />
+
+    <label for="genre">Genero</label>
+    <input type="text" id="genre" name="genre" placeholder="Accion" required />
+
+    <input type="submit" value="Guardar" />
+</form>
+
+<div class="section--back">
+    <a href="{% url 'new' %}">Añadir otros datos</a>
+</div>
+
+
+{% endblock %}

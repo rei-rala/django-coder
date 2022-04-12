@@ -13,29 +13,70 @@
 {% endblock %}
 
 {% block content %}
+
+{% if q_movies == 0 or q_brands == 0 %}
+    
+    {% block message %}
+        <p>Error, faltan agregar datos. Haga click a continuacion:</p>
+    {% endblock %}
+    <div>
+        {% if q_movies == 0 %} 
+            <a href="{% url 'addMovie' %}">Añadir peliculas</a>
+        {% endif %}
+        {% if q_brands == 0 %}
+            <a href="{% url 'addBrand' %}">Añadir marcas</a>
+        {% endif %}
+    </div>
+
+
+{% else %}
 <form method="POST">
     {% csrf_token %}
     <label for="name">Nombre</label>
-    <input type="text" id="name" name="name" placeholder="Juan Perez" required />
+    <input type="text" id="name" name="name" placeholder="Juan" required />
 
     <label for="born">Nacimiento</label>
-    <input type="date" id="born" name="born" min="1000-01-01" max="{{default_born_date}}" value="{{default_born_date}}"
-        required />
+    <input type="date" id="born" name="born" min="1000-01-01" max="{{default_born_date}}"
+        value="{{default_born_date}}" required />
 
     <label for="favourite_number">Numero favorito</label>
     <input type="number" id="favourite_number" name="favourite_number" placeholder="42" required />
 
-    <label for="relationship">Parentezco</label>
-    <input type="text" id="relationship" name="relationship" placeholder="Desconocido" />
+    <div>
+        <label for="favourite_movie">Pelicula favorita</label>
+        <select name="favourite_movie" id="favourite_movie">
+            {% for movie in movies %}
+            {% if movie.id == favourite_movie %}
+            <option value="{{ movie.id }}" selected>{{ movie.title }}</option>
+            {% else %}
+            <option value="{{ movie.id }}">{{ movie.title }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <a href="{% url 'addMovie' %}">Añadir pelicula</a>
+    </div>
+
+    <div>
+        <label for="favourite_brand">Marca preferida</label>
+        <select name="favourite_brand" id="favourite_brand">
+            {% for brand in brands %}
+            {% if brand == favourite_brand %}
+            <option value="{{ brand.id }}" selected>{{ brand.name }}</option>
+            {% else %}
+            <option value="{{ brand.id }}">{{ brand.name }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <a href="{% url 'addBrand' %}">Añadir marca</a>
+    </div>
+
 
     <input type="submit" value="Guardar" />
 </form>
+{% endif %}
 
 <div class="section--back">
-    <a  href="{% url 'people' %}">Volver a la lista</a>
+    <a href="{% url 'new' %}">Añadir otros datos</a>
 </div>
 
-<script>
-    console.log({ postObject: "{{postObject}}" });
-</script>
 {% endblock %}

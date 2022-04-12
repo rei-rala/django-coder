@@ -24,7 +24,6 @@
             <legend>{{ person.name }}</legend>
             <p>Nacimiento <b>{{ person.born }}</b></p>
             <p>Numero Favorito: <b>{{ person.favourite_number }}</b></p>
-            <p>Parentezco: <b>{{ person.relationship }}</b></p>
             <a href="{% url 'editPerson' id=person.id %}">Editar</a>
             <a href="{% url 'deletePerson' id=person.id %}">Eliminar</a>
         </fieldset>

@@ -27,13 +27,35 @@
 
     <label for="favourite_number">Numero favorito</label>
     <input required type="number" id="favourite_number" name="favourite_number"
-        placeholder="{% if favourite_number %}Numero anterior: {{favourite_number}} {% else %} 42{% endif %}"
+        placeholder="{% if person.favourite_number %}Numero anterior: {{person.favourite_number}} {% else %} 42{% endif %}"
         value="{{person.favourite_number}}" />
 
-    <label for="relationship">Parentezco</label>
-    <input required type="text" id="relationship" name="relationship"
-        placeholder="{% if person.relationship %}Relacion anterior: {{person.relationship}} {% else %} Desconocido{% endif %}"
-        value="{{person.relationship}}" />
+    <div>
+        <label for="favourite_movie">Pelicula favorita</label>
+        <select name="favourite_movie" id="favourite_movie">
+            {% for movie in movies %}
+            {% if movie.id == person.favourite_movie.id %}
+
+            <option value="{{ movie.id }}" selected>{{ movie.title }}</option>
+            {% else %}
+            <option value="{{ movie.id }}">{{ movie.title }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <div>
+        <label for="favourite_brand">Marca</label>
+        <select name="favourite_brand" id="favourite_brand">
+            {% for brand in brands %}
+            {% if brand.id == person.favourite_brand.id %}
+            <option value="{{ brand.id }}" selected>{{ brand.name }}</option>
+            {% else %}
+            <option value="{{ brand.id }}">{{ brand.name }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
 
     <input type="submit" value="Guardar" />
 </form>

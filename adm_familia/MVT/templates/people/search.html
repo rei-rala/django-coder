@@ -85,10 +85,12 @@
         <select name="search_term" id="search_term" name="search_term">
 
             {% for field in model_fields %}
-            {% if field == search_term %}
-            <option value="{{ field }}" selected>{{ field }}</option>
+            {% if not field.is_relation %}
+            {% if field.name == search_term %}
+            <option value="{{ field.name }}" selected>{{ field.name }}</option>
             {% else %}
-            <option value="{{ field }}">{{ field }}</option>
+            <option value="{{ field.name }}">{{ field.name }}</option>
+            {% endif %}
             {% endif %}
             {% endfor %}
         </select>
@@ -148,15 +150,10 @@
         const search_value = document.getElementById('search_value')
         // Won't make a switch statement 😊
         let attributes = {
-            name: {
+            text: {
                 type: 'text',
-                placeholder: 'Juan Perez',
-                value: "{{search_term}}" === "name" ? "{{search_value}}" : ''
-            },
-            relationship: {
-                type: 'text',
-                placeholder: 'Desconocido',
-                value: "{{search_term}}" === "relationship" ? "{{search_value}}" : ''
+                placeholder: 'Ingrese texto',
+                value: ['name', 'favourite_brand', 'favourite_movie'].includes("{{search_term}}") ? "{{search_value}}" : ''
             },
             number: {
                 type: 'number',
@@ -170,7 +167,7 @@
                 value: "{{search_term}}" === "born" ? "{{search_value}}" : '{{default_born_date}}'
             }
         }
-        itemAttributes = attributes[['id', 'favourite_number'].includes(value.toLowerCase()) ? 'number' : value] || { type: 'text', placeholder: 'wtf did you do?', value: '' }
+        itemAttributes = attributes[['id', 'favourite_number'].includes(value) ? 'number' : ['name', 'favourite_brand', 'favourite_movie'].includes(value) ? 'text' : value] || { type: 'text', placeholder: 'wtf did you do?', value: '' }
         Object.entries((itemAttributes)).forEach(([attribute, value]) => search_value.setAttribute(attribute, value))
     }
 

@@ -25,18 +25,27 @@
 <form method="POST">
     {% csrf_token %}
     <label for="name">Nombre</label>
-    <input disabled id="name" type="text" name="name" placeholder="{{person.name}}" value="{{person.name}}" />
+    <input disabled id="name" type="text" name="name" placeholder="{{person.name}}" />
 
     <label for="born">Nacimiento</label>
     <input disabled id="born" type="date" name="born" placeholder="{{person.born}}" value="{{person.born}}" />
 
     <label for="favourite_number">Numero favorito</label>
-    <input disabled id="favourite_number" type="text" name="favourite_number" placeholder="{{person.favourite_number}}"
-        value="{{person.favourite_number}}" />
+    <input disabled id="favourite_number" type="text" name="favourite_number" placeholder="{{person.favourite_number}}" />
 
-    <label for="relationship">Parentezco</label>
-    <input disabled id="relationship" type="text" name="relationship" placeholder="{{person.relationship}}"
-        value="{{person.relationship}}" />
+        <div>
+            <label for="favourite_movie">Pelicula favorita</label>
+            <select name="favourite_movie" id="favourite_movie" disabled>
+                <option selected>{{ person.favourite_movie.title }}</option>
+            </select>
+        </div>
+    
+        <div>
+            <label for="favourite_brand">Marca</label>
+            <select name="favourite_brand" id="favourite_brand" disabled>
+                <option selected>{{ person.favourite_brand.name }}</option>
+            </select>
+        </div>
 
     {% if person.id %}
         <input type="submit" value="Eliminar" />

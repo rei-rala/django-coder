@@ -2,8 +2,8 @@ from datetime import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView
 
-from MVT.models import Person
-from MVT.formsModel import PersonForm
+from MVT.models import Person, Movie, Brand
+from MVT.formsModel import PersonForm, MovieForm, BrandForm
 
 
 def to_html_date(date_like) -> str:
@@ -21,33 +21,93 @@ def toPeople(request):
     return redirect("/people")
 
 
+class NewX(TemplateView):
+    template_name = "_general/add.html"
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+
+class BrandAdd(TemplateView):
+    template_name = "brands/add.html"
+
+    def post(self, request):
+        message = None
+        form = BrandForm(request.POST)
+        try:
+            if form.is_valid():
+                form.save()
+                message = "La marca se ha guardado correctamente"
+            else:
+                message = "Error. Verifique los datos ingresados."
+        except Exception as e:
+            message = f"Ha ocurrido un error: {e}"
+
+        return render(request, self.template_name, {"form": form, "message": message})
+
+
+class MovieAdd(TemplateView):
+    template_name = "movies/add.html"
+
+    def post(self, request):
+        message = None
+        form = MovieForm(request.POST)
+        try:
+            if form.is_valid():
+                form.save()
+                message = "La marca se ha guardado correctamente"
+            else:
+                message = "Error. Verifique los datos ingresados."
+        except Exception as e:
+            message = f"Ha ocurrido un error: {e}"
+
+        return render(request, self.template_name, {"form": form, "message": message})
+
+
 class PersonSearch(TemplateView):
     template_name = "people/search.html"
-    
+    model_fields = Person._meta.get_fields()
+    model_field_names = [field.name for field in model_fields]
+
+    """ for a in model_fields:
+        print(a.name) """
+
     context = {
         "default_born_date": to_html_date(datetime.now()),
-        "model_fields": [str(h).split('.')[2].replace('&#x27;', '') for h in Person._meta.get_fields()],
+        "model_fields": [
+            {"name":f.name, 'type':f.get_internal_type, "is_relation": f.is_relation} for f in model_fields
+        ],
     }
 
     def get(self, request):
+        print(self.model_fields[4].is_relation)
+
         return render(request, self.template_name, self.context)
 
     def post(self, request):
         search_term = request.POST.get("search_term")
         search_value = request.POST.get("search_value")
-        search_strict = request.POST.get("search_strict") == 'on'
+        search_strict = request.POST.get("search_strict") == "on"
 
-        query = Person.objects.filter(**{f"{search_term}__{'exact' if search_strict else 'contains' }": search_value})
+        if search_term in self.model_field_names:
+            idx = self.model_field_names.index(search_term)
+            query = None
+            if self.model_fields[idx].is_relation:
+                # TODO: query including Foreign Keys!
+                query = {f"{search_term}__{'exact' if search_strict else 'exact' or 'contains' }": search_value if type(search_value) == int else 0}
+            else:
+                query = {f"{search_term}__{'exact' if search_strict else 'contains' }": search_value}
+
+            self.context["people"] = Person.objects.filter(**query)
 
         self.context = {
             **self.context,
-            "people": query,
-            "people_count": query.count(),
+            "people_count": self.context['people'].count(),
             "search_term": search_term,
             "search_value": search_value,
             "search_strict": search_strict,
         }
-        
+
         return render(request, self.template_name, self.context)
 
 
@@ -63,34 +123,37 @@ class PersonList(TemplateView):
         return render(request, template_name, context)
 
 
-class PersonFormAdd(TemplateView):
+class PersonAdd(TemplateView):
     template = "people/add.html"
-    context = {"default_born_date": to_html_date(datetime.now())}
+    context = {
+        "default_born_date": to_html_date(datetime.now()),
+    }
+    message = None
 
     def get(self, request):
+        movies = Movie.objects.all()
+        brands = Brand.objects.all()
+
+        self.context = {
+            **self.context,
+            "movies": movies,
+            "brands": brands,
+            "q_movies": movies.count(),
+            "q_brands": brands.count(),
+        }
+
         return render(request, self.template, self.context)
 
     def post(self, request):
-        postDictionary = request.POST.dict()
-
-        postDictionary["relationship"] = (
-            "Desconocido"
-            if postDictionary["relationship"].strip() == ""
-            else postDictionary["relationship"].strip()
-        )
-
-        person = PersonForm(postDictionary)
-        self.context["person"] = person
+        person = PersonForm(request.POST)
 
         if person.is_valid():
             person.save()
-            self.context["message"] = "Persona agregada correctamente."
+            self.message = "Persona agregada correctamente."
         else:
-            self.context[
-                "message"
-            ] = "Error al agregar persona, verifique los datos ingresados."
+            self.message = "Error al agregar persona, verifique los datos ingresados."
 
-        return render(request, self.template, self.context)
+        return redirect("addPerson")
 
 
 class PersonEdit(TemplateView):
@@ -99,21 +162,37 @@ class PersonEdit(TemplateView):
     def get(self, request, id):
         person = get_object_or_404(Person, pk=id)
         person.born = to_html_date(person.born)
-        context = {"person": person}
+        movies = Movie.objects.all()
+        brands = Brand.objects.all()
 
+        context = {
+            "person": person,
+            "movies": movies,
+            "brands": brands,
+            "q_movies": movies.count(),
+            "q_brands": brands.count(),
+        }
         return render(request, self.template, context)
 
     def post(self, request, id):
-        context = {}
         person = get_object_or_404(Person, pk=id)
+        context = {}
         try:
-            person.born = to_html_date(person.born)
-            context["person"] = person.__dict__
+            editedPerson = PersonForm(request.POST, instance=person)
 
-            form = PersonForm(request.POST, instance=person)
+            movies = Movie.objects.all()
+            brands = Brand.objects.all()
 
-            if form.is_valid():
-                form.save()
+            context = {
+                "person": person,
+                "movies": movies,
+                "brands": brands,
+                "q_movies": movies.count(),
+                "q_brands": brands.count(),
+            }
+            if editedPerson.is_valid():
+                editedPerson.save()
+
                 context["message"] = "Persona editada correctamente"
             else:
                 context[

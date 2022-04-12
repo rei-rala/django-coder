@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+| Agregar nuevas opciones
+{% endblock %}
+
+{% block header_title %}
+<h3>Añadir nuevas opciones</h3>
+{% endblock %}
+
+{% block go_back %}
+<a href="javascript:history.go(-1)">ATRAS</a>
+{% endblock %}
+
+{% block content %}
+
+<fieldset>
+    <legend>Pelicula</legend>
+    <a href="{% url 'addMovie' %}">Nueva Pelicula</a>
+</fieldset>
+<fieldset>
+    <legend>Marca</legend>
+    <a href="{% url 'addBrand' %}">Nueva Marca</a>
+</fieldset>
+<fieldset>
+    <legend>Persona</legend>
+    <a href="{% url 'addPerson' %}">Nueva Persona</a>
+</fieldset>
+
+{% endblock %}
