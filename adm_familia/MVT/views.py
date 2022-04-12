@@ -21,7 +21,37 @@ def toPeople(request):
     return redirect("/people")
 
 
-class PersonListView(TemplateView):
+class PersonSearch(TemplateView):
+    template_name = "people/search.html"
+    
+    context = {
+        "default_born_date": to_html_date(datetime.now()),
+        "model_fields": [str(h).split('.')[2].replace('&#x27;', '') for h in Person._meta.get_fields()],
+    }
+
+    def get(self, request):
+        return render(request, self.template_name, self.context)
+
+    def post(self, request):
+        search_term = request.POST.get("search_term")
+        search_value = request.POST.get("search_value")
+        search_strict = request.POST.get("search_strict") == 'on'
+
+        query = Person.objects.filter(**{f"{search_term}__{'exact' if search_strict else 'contains' }": search_value})
+
+        self.context = {
+            **self.context,
+            "people": query,
+            "people_count": query.count(),
+            "search_term": search_term,
+            "search_value": search_value,
+            "search_strict": search_strict,
+        }
+        
+        return render(request, self.template_name, self.context)
+
+
+class PersonList(TemplateView):
     def get(self, request):
         template_name = "people/all.html"
         people = Person.objects.all()
@@ -56,7 +86,9 @@ class PersonFormAdd(TemplateView):
             person.save()
             self.context["message"] = "Persona agregada correctamente."
         else:
-            self.context["message"] = "Error al agregar persona, verifique los datos ingresados."
+            self.context[
+                "message"
+            ] = "Error al agregar persona, verifique los datos ingresados."
 
         return render(request, self.template, self.context)
 
@@ -84,7 +116,9 @@ class PersonEdit(TemplateView):
                 form.save()
                 context["message"] = "Persona editada correctamente"
             else:
-                context["message"] = "Error al editar persona, verifique los datos ingresados"
+                context[
+                    "message"
+                ] = "Error al editar persona, verifique los datos ingresados"
         except Exception as e:
             context["message"] = f"Error al editar persona. \n{e}"
 

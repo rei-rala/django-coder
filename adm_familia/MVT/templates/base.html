@@ -55,7 +55,7 @@
             margin: 0;
         }
 
-        li {
+        ul li {
             list-style: none;
         }
 
@@ -104,7 +104,7 @@
             color: white;
         }
 
-        .section--back a {
+        .section--back {
             display: grid;
             place-items: center;
         }
@@ -117,6 +117,9 @@
             color: green;
         }
     </style>
+
+    {% block aditional_head %}
+    {% endblock %}
 
     <title> MVT {% block title %}{% endblock %} </title>
 </head>
@@ -136,7 +139,7 @@
                     <a href="{% url 'addPerson' %}">Agregar</a>
                 </li>
                 <li>
-                    <a href="#">Buscar</a>
+                    <a href="{% url 'searchPerson' %}">Buscar</a>
                 </li>
             </ul>
         </nav>

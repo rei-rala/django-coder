@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block aditional_head %}
+<style>
+    form {
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        margin-bottom: 1rem;
+        gap: 1rem;
+    }
+
+    form>div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 0.25rem;
+    }
+
+    form label {
+        cursor: pointer;
+    }
+
+    form input {
+        width: auto;
+        margin: 0;
+    }
+
+    form input:not([type="checkbox"]),
+    form select {
+        min-width: 10rem;
+        max-width: 15rem;
+        margin: 0;
+    }
+
+    div>div p {
+        font-size: small;
+    }
+
+    ol {
+        max-width: 100%;
+    }
+
+    ol li,
+    ol li::marker {
+        padding: 0.5rem 0.75rem;
+        border: 1px solid #ccc;
+    }
+
+    ol,
+    ol li {
+        border-radius: 0.5rem;
+    }
+
+    ol li {
+        cursor: default;
+        width: fit-content;
+        margin-bottom: 0.2em;
+    }
+
+    ol li:hover {
+        background-color: #f0f0f0;
+    }
+</style>
+{% endblock %}
+
+
+{% block title %}
+| Buscar persona
+{% endblock %}
+
+{% block header_title %}
+<h3>Buscar nueva persona</h3>
+{% endblock %}
+
+{% block go_back %}
+<a href="javascript:history.go(-1)">ATRAS</a>
+{% endblock %}
+
+{% block content %}
+<form method="POST">
+    {% csrf_token %}
+    <div title="Nombre del atributo">
+        <label for="search_term">Atributo</label>
+        <select name="search_term" id="search_term" name="search_term">
+
+            {% for field in model_fields %}
+            {% if field == search_term %}
+            <option value="{{ field }}" selected>{{ field }}</option>
+            {% else %}
+            <option value="{{ field }}">{{ field }}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+
+    <div title="Valor del atributo">
+        <label for="search_value">Valor</label>
+        <input type="text" id="search_value" name="search_value" placeholder="42" required value="{{search_value}}" />
+    </div>
+
+    <div title="Especifica si la busqueda debe coincidir estrictamente">
+        <label for="search_strict">Estricta</label>
+        <input type="checkbox" id="search_strict" name="search_strict" {% if search_strict %} checked {% endif %} />
+    </div>
+
+    <input type="submit" value="Buscar" />
+</form>
+
+<div>
+    {% if people == None %}
+    <b>Ingrese termino de busqueda</b>
+    {% else %}
+    {% if people_count > 0 %}
+    <h4>Encontrados {{people_count}} resultado{% if people_count > 1%}s{% endif %} con el termino de busqueda</h4>
+    {% else %}
+    <h4>No se encontraron resultados con el termino de busqueda</h4>
+    {% endif %}
+    <div>
+        <p> <b>Atributo</b> {{search_term}} </p>
+        <p> <b>Valor</b> {{search_value}} </p>
+        <p> Busqueda {% if search_strict %} <b>estricta</b> {% else %} <i>no estricta</i> {% endif %} </p>
+    </div>
+
+    <ol>
+        {% for person in people %}
+        <li value="{{person.id}}" title="{{person}}">
+            {{person.name}}
+            <a href="{% url 'editPerson' id=person.id %}" title="Editar entrada #{{person.id}}">Editar</a>
+            <a href="{% url 'deletePerson' id=person.id %}" title="Eliminar entrada #{{person.id}}">Eliminar</a>
+        </li>
+        {% endfor %}
+    </ol>
+    {% endif %}
+</div>
+
+
+<div class="section--back">
+    <a href="{% url 'people' %}">Ver lista completa</a>
+</div>
+
+
+<script>
+    //'use strict';
+    const search_term = document.getElementById('search_term')
+
+    const changeHandler = (value) => {
+        const search_value = document.getElementById('search_value')
+        // Won't make a switch statement 😊
+        let attributes = {
+            name: {
+                type: 'text',
+                placeholder: 'Juan Perez',
+                value: "{{search_term}}" === "name" ? "{{search_value}}" : ''
+            },
+            relationship: {
+                type: 'text',
+                placeholder: 'Desconocido',
+                value: "{{search_term}}" === "relationship" ? "{{search_value}}" : ''
+            },
+            number: {
+                type: 'number',
+                placeholder: '42',
+                value: ['id', 'favourite_number'].includes("{{search_term}}") ? "{{search_value}}" : ''
+            },
+            born: {
+                type: 'date',
+                min: '1000-01-01',
+                placeholder: '{{default_born_date}}',
+                value: "{{search_term}}" === "born" ? "{{search_value}}" : '{{default_born_date}}'
+            }
+        }
+        itemAttributes = attributes[['id', 'favourite_number'].includes(value.toLowerCase()) ? 'number' : value] || { type: 'text', placeholder: 'wtf did you do?', value: '' }
+        Object.entries((itemAttributes)).forEach(([attribute, value]) => search_value.setAttribute(attribute, value))
+    }
+
+    window.addEventListener('load', () => {
+        changeHandler(search_term.value)
+        search_term.addEventListener('change', ({ target: { value } }) => changeHandler(value));
+    })
+
+
+</script>
+{% endblock %}
