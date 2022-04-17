@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block title %}
     |
     {% if person.id %}
@@ -56,12 +58,6 @@
     <a  href="{% url 'people' %}">Volver a la lista</a>
 </div>
 
-<script>
-    document.querySelector("form").addEventListener("submit", (e) => {
-        e.preventDefault();
-        confirm(
-            "¿Estás seguro de que quieres eliminar la entrada #{{person.id}}?"
-        ) && e.target.submit();
-    });
-</script>
+<script src='{% static "/js/people/delete.js" %}' /></script>
+
 {% endblock %}

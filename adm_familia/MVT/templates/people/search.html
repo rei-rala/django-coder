@@ -1,67 +1,8 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block aditional_head %}
-<style>
-    form {
-        flex-direction: row;
-        flex-wrap: nowrap;
-        align-items: center;
-        margin-bottom: 1rem;
-        gap: 1rem;
-    }
-
-    form>div {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0.25rem;
-    }
-
-    form label {
-        cursor: pointer;
-    }
-
-    form input {
-        width: auto;
-        margin: 0;
-    }
-
-    form input:not([type="checkbox"]),
-    form select {
-        min-width: 10rem;
-        max-width: 15rem;
-        margin: 0;
-    }
-
-    div>div p {
-        font-size: small;
-    }
-
-    ol {
-        max-width: 100%;
-    }
-
-    ol li,
-    ol li::marker {
-        padding: 0.5rem 0.75rem;
-        border: 1px solid #ccc;
-    }
-
-    ol,
-    ol li {
-        border-radius: 0.5rem;
-    }
-
-    ol li {
-        cursor: default;
-        width: fit-content;
-        margin-bottom: 0.2em;
-    }
-
-    ol li:hover {
-        background-color: #f0f0f0;
-    }
-</style>
+<link rel='stylesheet' type='text/css' href='{% static "styles/people/search.css" %}'>
 {% endblock %}
 
 

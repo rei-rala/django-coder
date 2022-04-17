@@ -69,9 +69,6 @@ class PersonSearch(TemplateView):
     model_fields = Person._meta.get_fields()
     model_field_names = [field.name for field in model_fields]
 
-    """ for a in model_fields:
-        print(a.name) """
-
     context = {
         "default_born_date": to_html_date(datetime.now()),
         "model_fields": [
@@ -80,8 +77,6 @@ class PersonSearch(TemplateView):
     }
 
     def get(self, request):
-        print(self.model_fields[4].is_relation)
-
         return render(request, self.template_name, self.context)
 
     def post(self, request):
