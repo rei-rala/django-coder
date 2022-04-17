@@ -18,9 +18,15 @@ Pasos para correr este proyecto
 Metodo: _GET_
 Nota: Los _ID_ son numericos
 
+### Base
+
 > **root** o **"/"**: _Redireccion_ a /people
->
+
+### People
+
 > **/people**:  Muestra lista de personas
+>
+> **/people/search**:  Busqueda de personas
 >
 > **/people/person/**`...`
 >
@@ -29,11 +35,15 @@ Nota: Los _ID_ son numericos
 > - `...`/**edit/`ID_Persona`**: Edita una persona segun su ID
 >
 > - `...`/**delete/`ID_Persona`**
->
+
+### Brand
+
 > **/brand/**`...`
 >
 > - `...`**/add**: Añade nueva marca
->
+
+### Movie
+
 > **/movie/**`...`
 >
 > - `...`/**add**: Añade nueva pelicula
